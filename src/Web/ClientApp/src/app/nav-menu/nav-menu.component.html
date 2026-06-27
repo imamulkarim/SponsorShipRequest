@@ -1,0 +1,91 @@
+<!--<header>
+  <nav>
+    <ul>
+      <li><a class="nav-brand" [routerLink]="['/']">Clean Architecture</a></li>
+    </ul>
+    <ul>
+      <li><a [routerLink]="['/']" [routerLinkActive]="['pico-active']" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
+      <li><a [routerLink]="['/counter']" [routerLinkActive]="['pico-active']">Counter</a></li>
+      <li><a [routerLink]="['/weather']" [routerLinkActive]="['pico-active']">Weather</a></li>
+      <li><a [routerLink]="['/todo']" [routerLinkActive]="['pico-active']">Tasks</a></li>
+    </ul>
+    <ul>
+      @if (isAuthenticated$ | async) {
+        <li><a href="#" (click)="logout($event)">Log out</a></li>
+      } @else {
+        <li><a [routerLink]="['/login']" [routerLinkActive]="['pico-active']">Log in</a></li>
+        <li><a [routerLink]="['/register']" [routerLinkActive]="['pico-active']">Register</a></li>
+      }
+      <li aria-hidden="true" class="nav-separator"></li>
+      <li><app-theme-toggle /></li>
+    </ul>
+  </nav>
+</header>-->
+
+<header>
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+      <a class="navbar-brand" [routerLink]="['/']">TechAssessment</a>
+      <button class="navbar-toggler" type="button" (click)="toggle()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse d-sm-inline-flex flex-sm-row-reverse" [ngClass]="{ show: isExpanded }">
+        <ul class="navbar-nav flex-grow">
+          <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/']" (click)="collapse()">Home</a>
+          </li>
+
+          <!-- Sponsorship Menu - Visible to Authenticated Users -->
+          <li class="nav-item" *ngIf="(isAuthenticated | async)"
+              [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/sponsorship']" (click)="collapse()">Sponsorship</a>
+          </li>
+
+          <!-- Manager Approvals -->
+          <li class="nav-item" *ngIf="isManager()"
+              [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/sponsorship/approvals/manager']" (click)="collapse()">
+              Manager Approvals
+            </a>
+          </li>
+
+          <!-- Finance Approvals -->
+          <li class="nav-item" *ngIf="isFinance()"
+              [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/sponsorship/approvals/finance']" (click)="collapse()">
+              Finance Approvals
+            </a>
+          </li>
+
+          <!-- Admin Dashboard -->
+          <li class="nav-item" *ngIf="isAdmin()"
+              [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/sponsorship/admin']" (click)="collapse()">
+              Admin Dashboard
+            </a>
+          </li>
+
+          <!--<li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/counter']" (click)="collapse()">Counter</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/fetch-data']" (click)="collapse()">Fetch data</a>
+          </li>-->
+        </ul>
+
+        <!-- User Authentication Section -->
+        <div class="ms-auto" *ngIf="(isAuthenticated | async); else anonymousUser">
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted">{{ userName | async }}</span>
+            <span class="badge bg-info">{{ userRole }}</span>
+            <a class="btn btn-link text-dark text-decoration-none" (click)="logout($event)">Logout</a>
+          </div>
+        </div>
+
+        <ng-template #anonymousUser>
+          <a class="nav-link text-dark" [routerLink]="['/login']" (click)="collapse()">Login</a>
+        </ng-template>
+      </div>
+    </div>
+  </nav>
+</header>

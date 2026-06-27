@@ -1,0 +1,42 @@
+<p>workflow-history works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Workflow History - Request #{{ requestId }}</h2>
+        <button class="btn btn-outline-secondary" (click)="goBack()">Back to Admin</button>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border"></div>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <div class="card" *ngIf="!isLoading && approvalHistory.length > 0">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let event of approvalHistory; let i = index">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge" [ngClass]="getActionBadgeClass(event.action)">
+                  {{ i + 1 }}
+                </div>
+                <div style="flex: 1">
+                  <div class="d-flex justify-content-between">
+                    <strong>{{ event.approverRole }}: {{ event.action }}</strong>
+                    <small class="text-muted">{{ event.approvedAt | date:'medium' }}</small>
+                  </div>
+                  <p class="mb-0 mt-2">{{ event.comments }}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="alert alert-info" *ngIf="!isLoading && approvalHistory.length === 0">
+        No approval history available yet
+      </div>
+    </div>
+  </div>
+</div>

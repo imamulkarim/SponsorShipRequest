@@ -1,0 +1,93 @@
+<div class="container mt-4" *ngIf="!isLoading && request">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ request.title }}</h2>
+        <button class="btn btn-outline-secondary" (click)="goBack()">Back</button>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <div class="d-flex justify-content-between">
+            <h5 class="mb-0">Request Details</h5>
+            <span class="badge" [ngClass]="getStatusBadgeClass(request.status)">{{ request.status }}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p><strong>Requestor:</strong> {{ request.requestorName }}</p>
+              <p><strong>Department:</strong> {{ request.department }}</p>
+              <p><strong>Type:</strong> {{ request.sponsorshipType }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Event Name:</strong> {{ request.eventName }}</p>
+              <p><strong>Event Date:</strong> {{ request.eventDate | date:'medium' }}</p>
+              <p><strong>Requested Amount:</strong> {{ request.requestedAmount | currency }}</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="mb-3">
+            <h6>Purpose</h6>
+            <p>{{ request.purpose }}</p>
+          </div>
+
+          <div *ngIf="request.businessBenefit" class="mb-3">
+            <h6>Expected Business Benefit</h6>
+            <p>{{ request.businessBenefit }}</p>
+          </div>
+
+          <div *ngIf="request.managerApprovalRemarks" class="alert alert-info">
+            <strong>Manager Remarks:</strong> {{ request.managerApprovalRemarks }}
+          </div>
+
+          <div *ngIf="request.financeApprovalRemarks" class="alert alert-info">
+            <strong>Finance Remarks:</strong> {{ request.financeApprovalRemarks }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Approval History -->
+      <div class="card mb-4" *ngIf="request.approvalHistory && request.approvalHistory.length > 0">
+        <div class="card-header">
+          <h5 class="mb-0">Approval History</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let history of request.approvalHistory">
+              <div class="d-flex justify-content-between">
+                <strong>{{ history.approverRole }}: {{ history.action }}</strong>
+                <small class="text-muted">{{ history.approvedAt | date:'medium' }}</small>
+              </div>
+              <p class="mb-0">{{ history.comments }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="card">
+        <div class="card-body">
+          <button *ngIf="canEdit()" class="btn btn-primary me-2" (click)="editRequest()">Edit</button>
+          <button *ngIf="canSubmit()" class="btn btn-success me-2" (click)="submitRequest()">Submit</button>
+          <button *ngIf="canCancel()" class="btn btn-warning" (click)="cancelRequest()">Cancel</button>
+          <p *ngIf="!canEdit() && !canSubmit() && !canCancel()" class="text-muted mb-0">No actions available</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4" *ngIf="isLoading">
+  <div class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4" *ngIf="!isLoading && errorMessage">
+  <div class="alert alert-danger">{{ errorMessage }}</div>
+</div>

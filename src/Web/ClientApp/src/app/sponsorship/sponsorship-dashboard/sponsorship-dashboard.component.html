@@ -1,0 +1,96 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Sponsorship Dashboard</h2>
+        <button class="btn btn-primary" (click)="createNewRequest()">
+          <i class="bi bi-plus-circle"></i> Create New Request
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Draft</h5>
+          <p class="card-text display-4 text-secondary">{{ draftCount }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Pending</h5>
+          <p class="card-text display-4 text-warning">{{ pendingCount }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Approved</h5>
+          <p class="card-text display-4 text-success">{{ approvedCount }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Rejected</h5>
+          <p class="card-text display-4 text-danger">{{ rejectedCount }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Requests</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isLoading" class="text-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+          <table class="table table-hover" *ngIf="!isLoading && requests.length > 0">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Event</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of requests | slice:0:5">
+                <td>{{ request.title }}</td>
+                <td>{{ request.eventName }}</td>
+                <td>{{ request.requestedAmount | currency }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(request.status)">
+                    {{ request.status }}
+                  </span>
+                </td>
+                <td>{{ request.createdAt | date:'short' }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" (click)="viewRequest(request.id)">
+                    View
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p *ngIf="!isLoading && requests.length === 0" class="text-muted">No requests found</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Pending Approvals</h2>
+
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <table class="table table-hover" *ngIf="!isLoading && approvals.length > 0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Requestor</th>
+            <th>Department</th>
+            <th>Amount</th>
+            <th>Event Date</th>
+            <th>Submitted</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let approval of approvals">
+            <td>{{ approval.title }}</td>
+            <td>{{ approval.requestorName }}</td>
+            <td>{{ approval.department }}</td>
+            <td>{{ approval.requestedAmount | currency }}</td>
+            <td>
+              {{ approval.eventDate | date:'short' }}
+              <span class="badge" [ngClass]="getUrgencyClass(approval.eventDate)">
+                Urgent
+              </span>
+            </td>
+            <td>{{ approval.submittedAt | date:'short' }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" (click)="viewApproval(approval.id)">
+                Review
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="!isLoading && approvals.length === 0" class="alert alert-info">
+        No pending approvals at the moment
+      </p>
+    </div>
+  </div>
+</div>

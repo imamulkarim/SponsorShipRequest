@@ -1,0 +1,125 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h2>Admin Dashboard - All Sponsorship Requests</h2>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Draft</h6>
+          <p class="display-6 text-secondary">{{ statusStats.draft }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Manager Approval</h6>
+          <p class="display-6 text-warning">{{ statusStats.pendingManager }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Finance Review</h6>
+          <p class="display-6 text-info">{{ statusStats.pendingFinance }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Approved</h6>
+          <p class="display-6 text-success">{{ statusStats.approved }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Rejected</h6>
+          <p class="display-6 text-danger">{{ statusStats.rejected }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6>Cancelled</h6>
+          <p class="display-6 text-dark">{{ statusStats.cancelled }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <select class="form-control" [(ngModel)]="selectedFilters.status">
+        <option value="">All Statuses</option>
+        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select class="form-control" [(ngModel)]="selectedFilters.department">
+        <option value="">All Departments</option>
+        <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-primary" (click)="exportToCSV()" [disabled]="filteredRequests.length === 0">
+        <i class="bi bi-download"></i> Export to CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Requests Table -->
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border"></div>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <table class="table table-hover" *ngIf="!isLoading && filteredRequests.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Requestor</th>
+            <th>Department</th>
+            <th>Event</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of filteredRequests">
+            <td>{{ request.id }}</td>
+            <td>{{ request.title }}</td>
+            <td>{{ request.requestorName }}</td>
+            <td>{{ request.department }}</td>
+            <td>{{ request.eventName }}</td>
+            <td>{{ request.requestedAmount | currency }}</td>
+            <td><span class="badge" [ngClass]="getStatusBadgeClass(request.status)">{{ request.status }}</span></td>
+            <td>{{ request.createdAt | date:'short' }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" (click)="viewDetails(request.id)">Details</button>
+              <button class="btn btn-sm btn-outline-secondary" (click)="viewHistory(request.id)">History</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="!isLoading && filteredRequests.length === 0" class="text-muted">No requests found</p>
+    </div>
+  </div>
+</div>

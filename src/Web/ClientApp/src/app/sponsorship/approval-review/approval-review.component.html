@@ -1,0 +1,86 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card" *ngIf="!isLoading && request">
+        <div class="card-header">
+          <h5 class="mb-0">{{ request.title }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <p><strong>Requestor:</strong> {{ request.requestorName }}</p>
+              <p><strong>Department:</strong> {{ request.department }}</p>
+              <p><strong>Sponsorship Type:</strong> {{ request.sponsorshipType }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Status:</strong> <span class="badge" [ngClass]="getStatusBadgeClass(request.status)">{{ request.status }}</span></p>
+              <p><strong>Event Date:</strong> {{ request.eventDate | date:'medium' }}</p>
+              <p><strong>Amount Requested:</strong> {{ request.requestedAmount | currency }}</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="mb-3">
+            <h6>Event Information</h6>
+            <p><strong>Event Name:</strong> {{ request.eventName }}</p>
+          </div>
+
+          <div class="mb-3">
+            <h6>Purpose</h6>
+            <p>{{ request.purpose }}</p>
+          </div>
+
+          <div *ngIf="request.businessBenefit" class="mb-3">
+            <h6>Expected Business Benefit</h6>
+            <p>{{ request.businessBenefit }}</p>
+          </div>
+
+          <div *ngIf="request.approvalHistory && request.approvalHistory.length > 0" class="mb-3">
+            <h6>Approval History</h6>
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let history of request.approvalHistory">
+                <strong>{{ history.approverRole }}:</strong> {{ history.action }}
+                <br>
+                <small class="text-muted">{{ history.approvedAt | date:'medium' }}</small>
+                <br>
+                {{ history.comments }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Approval Decision</h6>
+        </div>
+        <div class="card-body">
+          <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label for="remarks" class="form-label">Remarks *</label>
+              <textarea class="form-control" id="remarks" formControlName="remarks" rows="4"
+                [class.is-invalid]="form.get('remarks')?.invalid && form.get('remarks')?.touched"></textarea>
+              <small class="form-text text-muted">Minimum 10 characters</small>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-success" (click)="approve()" [disabled]="form.invalid || isProcessing">
+                {{ isProcessing ? 'Processing...' : 'Approve' }}
+              </button>
+              <button type="button" class="btn btn-danger" (click)="reject()" [disabled]="form.invalid || isProcessing">
+                {{ isProcessing ? 'Processing...' : 'Reject' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
