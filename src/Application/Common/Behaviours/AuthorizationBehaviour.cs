@@ -5,28 +5,31 @@ using TechAssessment.Application.Common.Security;
 
 namespace TechAssessment.Application.Common.Behaviours;
 
-public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> 
-    where TRequest : notnull
+public class AuthorizationBehaviour<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     private readonly IUser _user;
     private readonly IIdentityService _identityService;
+    private readonly IRequestHandler<TRequest, TResponse> _inner;
 
     public AuthorizationBehaviour(
         IUser user,
-        IIdentityService identityService)
+        IIdentityService identityService,
+        IRequestHandler<TRequest, TResponse> inner)
     {
         _user = user;
         _identityService = identityService;
+        _inner = inner;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request,  CancellationToken cancellationToken)
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
         if (authorizeAttributes.Any())
         {
             // Must be authenticated user
-            if (_user.Id == null)
+            if (_user == null || _user.Id == null)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -75,6 +78,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         }
 
         // User is authorized / authorization not required
-        return await next();
+        //return await next();
+        return await _inner.Handle(request, cancellationToken);
     }
 }

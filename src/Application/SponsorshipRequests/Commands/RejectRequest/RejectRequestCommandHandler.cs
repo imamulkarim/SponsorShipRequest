@@ -1,11 +1,12 @@
 ﻿
 using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Application.Common.Models;
 using TechAssessment.Domain.Entities;
 using TechAssessment.Domain.Enums;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.RejectRequest;
 
-public class RejectRequestCommandHandler : IRequestHandler<RejectRequestCommand>
+public class RejectRequestCommandHandler : IRequestHandler<RejectRequestCommand, int>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
@@ -16,7 +17,7 @@ public class RejectRequestCommandHandler : IRequestHandler<RejectRequestCommand>
         _user = user;
     }
 
-    public async Task Handle(RejectRequestCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(RejectRequestCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.SponsorshipRequests
             .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -51,5 +52,7 @@ public class RejectRequestCommandHandler : IRequestHandler<RejectRequestCommand>
 
         _context.SponsorshipRequestApprovals.Add(approval);
         await _context.SaveChangesAsync(cancellationToken);
+
+        return approval.Id;
     }
 }

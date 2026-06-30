@@ -18,14 +18,14 @@ public class FinanceApprovals : IEndpointGroup
     }
 
     [EndpointSummary("Get Pending Finance Approvals")]
-    public static async Task<Ok<PendingApprovalsVm>> GetPendingApprovalsFinance(ISender sender)
+    public static async Task<Ok<PendingApprovalsVm>> GetPendingApprovalsFinance(ICustomMediator sender)
     {
         var vm = await sender.Send(new GetPendingApprovalsQuery("Finance"));
         return TypedResults.Ok(vm);
     }
 
     [EndpointSummary("Approve Request")]
-    public static async Task<NoContent> ApproveRequestFinance(ISender sender, int id, ApproveRequestCommand command)
+    public static async Task<NoContent> ApproveRequestFinance(ICustomMediator sender, int id, ApproveRequestCommand command)
     {
         var approveCommand = command with { Id = id, ApproverRole = "FinanceAdmin" };
         await sender.Send(approveCommand);
@@ -33,7 +33,7 @@ public class FinanceApprovals : IEndpointGroup
     }
 
     [EndpointSummary("Reject Request")]
-    public static async Task<NoContent> RejectRequestFinance(ISender sender, int id, RejectRequestCommand command)
+    public static async Task<NoContent> RejectRequestFinance(ICustomMediator sender, int id, RejectRequestCommand command)
     {
         var rejectCommand = command with { Id = id, ApproverRole = "FinanceAdmin" };
         await sender.Send(rejectCommand);

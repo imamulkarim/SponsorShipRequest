@@ -1,12 +1,12 @@
 using Ardalis.GuardClauses;
 using TechAssessment.Application.Common.Exceptions;
 using TechAssessment.Application.Common.Interfaces;
-using TechAssessment.Domain.Entities;
+using TechAssessment.Application.Common.Models;
 using TechAssessment.Domain.Enums;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.UpdateSponsorshipRequest;
 
-public class UpdateSponsorshipRequestCommandHandler : IRequestHandler<UpdateSponsorshipRequestCommand, Unit>
+public class UpdateSponsorshipRequestCommandHandler : IRequestHandler<UpdateSponsorshipRequestCommand, int>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
@@ -17,7 +17,7 @@ public class UpdateSponsorshipRequestCommandHandler : IRequestHandler<UpdateSpon
         _user = user;
     }
 
-    public async Task<Unit> Handle(UpdateSponsorshipRequestCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateSponsorshipRequestCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.SponsorshipRequests
             .FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
@@ -50,6 +50,6 @@ public class UpdateSponsorshipRequestCommandHandler : IRequestHandler<UpdateSpon
         _context.SponsorshipRequests.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return entity.Id;
     }
 }

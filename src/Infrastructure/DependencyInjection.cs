@@ -25,6 +25,7 @@ public static class DependencyInjection
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             //options.UseNpgsql(connectionString);
             options.UseSqlServer(connectionString);
+            
             options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
         });
 

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TechAssessment.Application.Common.Interfaces;
+﻿using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Application.Common.Models;
+using TechAssessment.Application.Mediator;
 using TechAssessment.Domain.Entities;
 using TechAssessment.Domain.Enums;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.ApproveRequest;
 
-public class ApproveRequestCommandHandler : IRequestHandler<ApproveRequestCommand>
+public class ApproveRequestCommandHandler : IRequestHandler<ApproveRequestCommand, Result<int>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
@@ -20,7 +19,7 @@ public class ApproveRequestCommandHandler : IRequestHandler<ApproveRequestComman
         _identityService = identityService;
     }
 
-    public async Task Handle(ApproveRequestCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(ApproveRequestCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.SponsorshipRequests
             .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -63,5 +62,6 @@ public class ApproveRequestCommandHandler : IRequestHandler<ApproveRequestComman
 
         _context.SponsorshipRequestApprovals.Add(approval);
         await _context.SaveChangesAsync(cancellationToken);
+        return Result.Success(approval.Id);
     }
 }

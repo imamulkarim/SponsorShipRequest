@@ -1,11 +1,12 @@
 ﻿
 using TechAssessment.Application.Common.Exceptions;
 using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Application.Common.Models;
 using TechAssessment.Domain.Enums;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.CancelRequest;
 
-public class CancelRequestCommandHandler : IRequestHandler<CancelRequestCommand>
+public class CancelRequestCommandHandler : IRequestHandler<CancelRequestCommand, int>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
@@ -16,7 +17,7 @@ public class CancelRequestCommandHandler : IRequestHandler<CancelRequestCommand>
         _user = user;
     }
 
-    public async Task Handle(CancelRequestCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CancelRequestCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.SponsorshipRequests
             .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -38,5 +39,6 @@ public class CancelRequestCommandHandler : IRequestHandler<CancelRequestCommand>
         entity.CancelledAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
+        return entity.Id;
     }
 }

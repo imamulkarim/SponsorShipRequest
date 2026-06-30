@@ -4,31 +4,33 @@ using Microsoft.Extensions.Logging;
 
 namespace TechAssessment.Application.Common.Behaviours;
 
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+public class PerformanceBehaviour<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;
     private readonly IUser _user;
     private readonly IIdentityService _identityService;
-
+    private readonly IRequestHandler<TRequest, TResponse> _inner;
     public PerformanceBehaviour(
         ILogger<TRequest> logger,
         IUser user,
-        IIdentityService identityService)
+        IIdentityService identityService,
+        IRequestHandler<TRequest, TResponse> inner)
     {
         _timer = new Stopwatch();
 
         _logger = logger;
         _user = user;
         _identityService = identityService;
+        _inner = inner;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
     {
         _timer.Start();
 
-        var response = await next();
+        var response = await _inner.Handle(request, cancellationToken); //next();
 
         _timer.Stop();
 
@@ -37,7 +39,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         if (elapsedMilliseconds > 500)
         {
             var requestName = typeof(TRequest).Name;
-            var userId = _user.Id ?? string.Empty;
+            var userId = _user?.Id ?? string.Empty;
             var userName = string.Empty;
 
             if (!string.IsNullOrEmpty(userId))

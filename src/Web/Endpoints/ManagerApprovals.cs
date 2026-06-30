@@ -18,14 +18,14 @@ public class ManagerApprovals : IEndpointGroup
     }
 
     [EndpointSummary("Get Pending Manager Approvals")]
-    public static async Task<Ok<PendingApprovalsVm>> GetPendingApprovals(ISender sender)
+    public static async Task<Ok<PendingApprovalsVm>> GetPendingApprovals(ICustomMediator sender)
     {
         var vm = await sender.Send(new GetPendingApprovalsQuery("Manager"));
         return TypedResults.Ok(vm);
     }
 
     [EndpointSummary("Approve Request")]
-    public static async Task<NoContent> ApproveRequest(ISender sender, int id, ApproveRequestCommand command)
+    public static async Task<NoContent> ApproveRequest(ICustomMediator sender, int id, ApproveRequestCommand command)
     {
         var approveCommand = command with { Id = id, ApproverRole = "Manager" };
         await sender.Send(approveCommand);
@@ -33,7 +33,7 @@ public class ManagerApprovals : IEndpointGroup
     }
 
     [EndpointSummary("Reject Request")]
-    public static async Task<NoContent> RejectRequest(ISender sender, int id, RejectRequestCommand command)
+    public static async Task<NoContent> RejectRequest(ICustomMediator sender, int id, RejectRequestCommand command)
     {
         var rejectCommand = command with { Id = id, ApproverRole = "Manager" };
         await sender.Send(rejectCommand);

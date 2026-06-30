@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TechAssessment.Application.Common.Models;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.CreateSponsorshipRequest;
 

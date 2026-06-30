@@ -16,14 +16,14 @@ public class AdminRequests : IEndpointGroup
     }
 
     [EndpointSummary("Get All Requests")]
-    public static async Task<Ok<AllRequestsVm>> GetAllRequests(ISender sender)
+    public static async Task<Ok<AllRequestsVm>> GetAllRequests(ICustomMediator sender)
     {
         var vm = await sender.Send(new GetAllRequestsQuery());
         return TypedResults.Ok(vm);
     }
 
     [EndpointSummary("Get Request Detail")]
-    public static async Task<Ok<RequestDetailVm>> GetRequestDetail(ISender sender, int id)
+    public static async Task<Ok<RequestDetailVm>> GetRequestDetail(ICustomMediator sender, int id)
     {
         var vm = await sender.Send(new GetRequestDetailQuery(id));
         return TypedResults.Ok(vm);

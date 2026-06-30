@@ -1,6 +1,6 @@
 namespace TechAssessment.Application.SponsorshipRequests.Commands.UpdateSponsorshipRequest;
 
-public record UpdateSponsorshipRequestCommand : IRequest<Unit>
+public record UpdateSponsorshipRequestCommand : IRequest<int>
 {
     public required int Id { get; init; }
     public required string Title { get; init; }

@@ -1,10 +1,11 @@
-using TechAssessment.Domain.Constants;
-using TechAssessment.Infrastructure.Data;
-using TechAssessment.Infrastructure.Identity;
-using MediatR;
+//using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TechAssessment.Application.Mediator;
+using TechAssessment.Domain.Constants;
+using TechAssessment.Infrastructure.Data;
+using TechAssessment.Infrastructure.Identity;
 
 namespace TechAssessment.Application.FunctionalTests.Infrastructure;
 
@@ -17,7 +18,7 @@ public static class TestApp
     {
         using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
 
-        var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
+        var mediator = scope.ServiceProvider.GetRequiredService<ICustomMediator>();
 
         return await mediator.Send(request);
     }
@@ -26,7 +27,7 @@ public static class TestApp
     {
         using var scope = FunctionalTestSetup.ScopeFactory.CreateScope();
 
-        var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
+        var mediator = scope.ServiceProvider.GetRequiredService<ICustomMediator>();
 
         await mediator.Send(request);
     }

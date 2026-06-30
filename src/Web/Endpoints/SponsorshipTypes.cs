@@ -12,7 +12,7 @@ public class SponsorshipTypes : IEndpointGroup
     }
 
     [EndpointSummary("Get Sponsorship Types")]
-    public static async Task<Ok<SponsorshipTypesVm>> GetTypes(ISender sender)
+    public static async Task<Ok<SponsorshipTypesVm>> GetTypes(ICustomMediator sender)
     {
         var vm = await sender.Send(new GetSponsorshipTypesQuery());
         return TypedResults.Ok(vm);

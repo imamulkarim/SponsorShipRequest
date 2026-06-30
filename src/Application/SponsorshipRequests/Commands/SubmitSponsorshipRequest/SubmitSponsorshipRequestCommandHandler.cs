@@ -1,11 +1,12 @@
 ﻿
 using TechAssessment.Application.Common.Exceptions;
 using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Application.Common.Models;
 using TechAssessment.Domain.Enums;
 
 namespace TechAssessment.Application.SponsorshipRequests.Commands.SubmitSponsorshipRequest;
 
-public class SubmitSponsorshipRequestCommandHandler : IRequestHandler<SubmitSponsorshipRequestCommand>
+public class SubmitSponsorshipRequestCommandHandler : IRequestHandler<SubmitSponsorshipRequestCommand, int>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
@@ -18,7 +19,7 @@ public class SubmitSponsorshipRequestCommandHandler : IRequestHandler<SubmitSpon
         _identityService = identityService;
     }
 
-    public async Task Handle(SubmitSponsorshipRequestCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(SubmitSponsorshipRequestCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.SponsorshipRequests
             .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -37,5 +38,7 @@ public class SubmitSponsorshipRequestCommandHandler : IRequestHandler<SubmitSpon
 
         entity.Status = SponsorshipRequestStatus.PendingManagerApproval;
         await _context.SaveChangesAsync(cancellationToken);
+
+        return entity.Id;
     }
 }

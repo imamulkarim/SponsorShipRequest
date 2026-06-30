@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Application.Common.Models;
 using TechAssessment.Domain.Entities;
 using TechAssessment.Domain.Enums;
 
