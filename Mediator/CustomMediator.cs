@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediatR;
-
-namespace TechAssessment.Application.Mediator;
+﻿
+namespace TechAssessment.Mediator;
 
 public class CustomMediator : ICustomMediator
 {
@@ -87,6 +83,7 @@ public class CustomMediator : ICustomMediator
         //var task = (Task)method.Invoke(handler, new object[] { request, cancellationToken })!;
         //await task;
     }
+
 
     public Task<object?> Send(object request, CancellationToken cancellationToken = default)
     {

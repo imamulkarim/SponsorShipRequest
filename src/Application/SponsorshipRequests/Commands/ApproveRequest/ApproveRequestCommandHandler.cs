@@ -1,6 +1,5 @@
 ﻿using TechAssessment.Application.Common.Interfaces;
 using TechAssessment.Application.Common.Models;
-using TechAssessment.Application.Mediator;
 using TechAssessment.Domain.Entities;
 using TechAssessment.Domain.Enums;
 
@@ -59,6 +58,12 @@ public class ApproveRequestCommandHandler : IRequestHandler<ApproveRequestComman
             Comments = request.Remarks,
             ApprovedAt = DateTime.UtcNow
         };
+
+        if(entity.Status == SponsorshipRequestStatus.Approved)
+        {
+            approval.Request = entity;
+            approval.MarkFinanceApproved();
+        }
 
         _context.SponsorshipRequestApprovals.Add(approval);
         await _context.SaveChangesAsync(cancellationToken);

@@ -1,3 +1,7 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
+using TechAssessment.Domain.Events;
+
 namespace TechAssessment.Domain.Entities;
 
 public class SponsorshipRequestApproval : BaseEntity
@@ -11,4 +15,17 @@ public class SponsorshipRequestApproval : BaseEntity
 
     // Navigation properties
     public SponsorshipRequest Request { get; set; } = null!;
+    
+    [NotMapped]
+    public bool IsDone { get; private set; }
+
+    public void MarkFinanceApproved()
+    {
+        if (IsDone) return; // Prevent duplicate execution
+
+        IsDone = true;
+
+        // Register the event safely inside the tracking collection
+        AddDomainEvent(new SponsorShipApprovedEvent(Request));
+    }
 }

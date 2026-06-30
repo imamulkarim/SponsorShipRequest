@@ -1,16 +1,15 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using TechAssessment.Application.Mediator;
+using TechAssessment.Mediator;
 using TechAssessment.Domain.Common;
 
 namespace TechAssessment.Infrastructure.Data.Interceptors;
 
 public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
 {
-    private readonly ICustomMediator _mediator;
+    private readonly IPublisher _mediator;
 
-    public DispatchDomainEventsInterceptor(ICustomMediator mediator)
+    public DispatchDomainEventsInterceptor(IPublisher mediator)
     {
         _mediator = mediator;
     }
@@ -46,6 +45,6 @@ public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
         entities.ToList().ForEach(e => e.ClearDomainEvents());
 
         foreach (var domainEvent in domainEvents)
-            await _mediator.Send(domainEvent);
+            await _mediator.Publish(domainEvent);
     }
 }

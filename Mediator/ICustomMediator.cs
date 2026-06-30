@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediatR;
+﻿
 
-namespace TechAssessment.Application.Mediator;
+namespace TechAssessment.Mediator;
+
 
 public interface ICustomMediator
 {

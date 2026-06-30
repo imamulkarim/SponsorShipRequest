@@ -1,4 +1,5 @@
-﻿namespace TechAssessment.Application.Mediator;
+﻿namespace TechAssessment.Mediator;
+
 
 /// <summary>
 /// Defines a handler for a request

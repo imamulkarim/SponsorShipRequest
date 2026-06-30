@@ -94,4 +94,68 @@ public static class MediatorDependencyInjectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddPublishers(this IServiceCollection services, Assembly assembly)
+    {
+        // 1. Register the core mediator engine
+        services.AddScoped<IPublisher, Publisher>();
+
+        // 2. Scan the assembly for types implementing our IRequestHandler interface
+        var handlerTypes = assembly.GetTypes()
+            .Where(t => !t.IsAbstract && !t.IsInterface &&
+                        t.GetInterfaces().Any(i => i.IsGenericType &&
+                        i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)) );
+
+        foreach (var handlerType in handlerTypes)
+        {
+            var interfaces = handlerType.GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>));
+
+            foreach (var @interface in interfaces)
+            {
+                var requestType = @interface.GetGenericArguments()[0];
+                //var responseType = @interface.GetGenericArguments()[1];
+                var responseType = requestType;
+
+                // Check if any IValidator<TRequest> is registered in the DI pipeline for this request
+                // We use a factory registration to determine this dynamically at runtime
+                services.AddTransient(@interface, provider =>
+                {
+                    // Resolve the actual inner business logic handler
+                    var innerHandler = ActivatorUtilities.CreateInstance(provider, handlerType);
+
+
+                    ////Loging Behaviour Pipeline
+                    //var loggerInterfaceType = typeof(ILogger<>).MakeGenericType(requestType);
+                    //var loggers = provider.GetService(loggerInterfaceType);
+                    //var user = provider.GetService<IUser>();
+                    //var identityService = provider.GetService<IIdentityService>();
+                    //if (loggers is not null && user is not null && identityService is not null)
+                    //{
+                    //    var LogingPipelineType = typeof(LoggingBehaviour<,>).MakeGenericType(requestType, responseType);
+                    //    innerHandler = ActivatorUtilities.CreateInstance(provider, LogingPipelineType, loggers, user, identityService, innerHandler);
+                    //}
+
+                    ////Unhandled Exception Behaviour Pipeline
+                    //if (loggers is not null)
+                    //{
+                    //    var exceptionPipelineType = typeof(UnhandledExceptionBehaviour<,>).MakeGenericType(requestType, responseType);
+                    //    innerHandler = ActivatorUtilities.CreateInstance(provider, exceptionPipelineType, loggers, innerHandler);
+                    //}
+
+                    ////Performance Behaviour Pipeline
+                    //if (loggers is not null && user is not null && identityService is not null)
+                    //{
+                    //    var PerformanceBehavooirPipelineType = typeof(PerformanceBehaviour<,>).MakeGenericType(requestType, responseType);
+                    //    innerHandler = ActivatorUtilities.CreateInstance(provider, PerformanceBehavooirPipelineType, loggers, user, identityService, innerHandler);
+                    //}
+
+                    return innerHandler;
+                });
+            }
+        }
+
+        return services;
+    }
+
 }

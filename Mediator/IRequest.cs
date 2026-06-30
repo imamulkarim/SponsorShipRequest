@@ -1,6 +1,6 @@
 ﻿
+namespace TechAssessment.Mediator;
 
-namespace TechAssessment.Application.Mediator;
 
 
 /// <summary>

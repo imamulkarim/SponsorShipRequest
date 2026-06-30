@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using TechAssessment.Application.Mediator;
+using TechAssessment.Mediator;
 using TechAssessment.Domain.Constants;
 using TechAssessment.Infrastructure.Data;
 using TechAssessment.Infrastructure.Identity;

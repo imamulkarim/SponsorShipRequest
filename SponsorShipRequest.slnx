@@ -12,6 +12,7 @@
     <File Path="SqlServerHosting.md" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="Mediator/Mediator.csproj" Id="d8d16f23-1a27-4992-8e37-752ded14482f" />
     <Project Path="src/AppHost/AppHost.csproj" />
     <Project Path="src/Application/Application.csproj" />
     <Project Path="src/Domain/Domain.csproj" />
