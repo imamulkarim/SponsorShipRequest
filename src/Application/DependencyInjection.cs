@@ -28,6 +28,7 @@ public static class DependencyInjection
         builder.Services.AddCustomMediator(Assembly.GetExecutingAssembly());
         builder.Services.AddPublishers(Assembly.GetExecutingAssembly());
 
+
         //builder.Services.AddMediatR(cfg => {
         //    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         //    cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));

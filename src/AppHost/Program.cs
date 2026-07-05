@@ -13,6 +13,8 @@ var builder = DistributedApplication.CreateBuilder(args);
 //        container.WithLifetime(ContainerLifetime.Persistent))
 //    .AddDatabase(Services.Database);
 
+var serviceBusConnection = builder.AddConnectionString(Services.ServiceBusConnection);
+
 #region example of using a SQL server container
 
 /*
@@ -108,6 +110,7 @@ var sql = builder.AddAzureSqlServer("sql")
 var web = builder.AddProject<Projects.Web>(Services.WebApi)
     .WithExternalHttpEndpoints()
     .WithReference(sql)
+    .WithReference(serviceBusConnection)
     .WithAspNetCoreEnvironment()
     .WithUrlForEndpoint("http", url =>
     {

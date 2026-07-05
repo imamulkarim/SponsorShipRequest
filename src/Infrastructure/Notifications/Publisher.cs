@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Domain.Common;
 
-namespace TechAssessment.Mediator;
+namespace TechAssessment.Infrastructure.Notifications;
+
 
 public class Publisher : IPublisher
 {

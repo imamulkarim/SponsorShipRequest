@@ -1,3 +1,4 @@
+using System.Reflection;
 using Scalar.AspNetCore;
 using TechAssessment.Infrastructure.Data;
 using TechAssessment.Shared;
@@ -11,6 +12,7 @@ builder.AddServiceDefaults();
 //builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
+
 builder.AddWebServices();
 
 //builder.Services.AddSwaggerGen(options =>

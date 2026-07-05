@@ -11,6 +11,9 @@
   <Folder Name="/Solution Items/aspire config tutorial/">
     <File Path="SqlServerHosting.md" />
   </Folder>
+  <Folder Name="/Solution Items/ServiceBus/">
+    <File Path="AZSBS.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="Mediator/Mediator.csproj" Id="d8d16f23-1a27-4992-8e37-752ded14482f" />
     <Project Path="src/AppHost/AppHost.csproj" />

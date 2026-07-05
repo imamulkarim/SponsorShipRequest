@@ -1,5 +1,8 @@
 ﻿
-namespace TechAssessment.Mediator;
+
+using TechAssessment.Domain.Common;
+
+namespace TechAssessment.Application.Common.Interfaces;
 
 public interface IPublisher
 {

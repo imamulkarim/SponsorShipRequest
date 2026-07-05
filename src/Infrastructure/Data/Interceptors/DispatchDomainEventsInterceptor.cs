@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using TechAssessment.Mediator;
 using TechAssessment.Domain.Common;
+using TechAssessment.Application.Common.Interfaces;
 
 namespace TechAssessment.Infrastructure.Data.Interceptors;
 

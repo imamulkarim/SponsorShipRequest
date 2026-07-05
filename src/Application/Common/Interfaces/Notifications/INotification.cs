@@ -1,11 +1,7 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
+﻿using TechAssessment.Domain.Common;
 
-namespace TechAssessment.Mediator;
+namespace TechAssessment.Application.Common.Interfaces;
 
-
-public interface INotification { }
 
 public interface INotificationHandler<in TNotification> where TNotification : INotification
 {

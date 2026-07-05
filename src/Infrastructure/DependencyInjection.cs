@@ -1,12 +1,16 @@
-﻿using TechAssessment.Application.Common.Interfaces;
-using TechAssessment.Infrastructure.Data;
-using TechAssessment.Infrastructure.Data.Interceptors;
-using TechAssessment.Infrastructure.Identity;
+﻿using System.Reflection;
+using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using TechAssessment.Application.Common.Interfaces;
+using TechAssessment.Infrastructure.Data;
+using TechAssessment.Infrastructure.Data.Interceptors;
+using TechAssessment.Infrastructure.Identity;
+using TechAssessment.Infrastructure.Messaging;
+using TechAssessment.Infrastructure.Notifications;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +28,12 @@ public static class DependencyInjection
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             //options.UseNpgsql(connectionString);
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString, sqloptions => {
+                sqloptions.EnableRetryOnFailure( 
+                    maxRetryCount: 5, 
+                    maxRetryDelay: TimeSpan.FromSeconds(30), 
+                    errorNumbersToAdd: null);
+            });
             
             options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
         });
@@ -34,6 +43,27 @@ public static class DependencyInjection
         builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
+
+        builder.Services.AddSingleton<ServiceBusClient>(_ =>
+        {
+            var serviceBusConnectionString = builder.Configuration.GetConnectionString(Services.ServiceBusConnection);
+            var options = new ServiceBusClientOptions
+            {
+                RetryOptions = new ServiceBusRetryOptions
+                {
+                    Mode = ServiceBusRetryMode.Exponential, // Delays grow with each failure
+                    MaxRetries = 3,                         // Stop trying network after 3 attempts
+                    Delay = TimeSpan.FromSeconds(0.8),      // Base delay
+                    MaxDelay = TimeSpan.FromSeconds(60),    // Cap the maximum delay
+                    TryTimeout = TimeSpan.FromSeconds(60)   // Timeout per network call
+                }
+            };
+            return new ServiceBusClient(serviceBusConnectionString, options);
+        });
+
+        builder.Services.AddScoped<IServiceBusPublisher, AzureServiceBusPublisher>();
+        builder.Services.AddScoped<IPublisher, Publisher>();
+
 
         builder.Services.AddAuthentication(options =>
             {
@@ -56,4 +86,5 @@ public static class DependencyInjection
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
     }
+
 }
