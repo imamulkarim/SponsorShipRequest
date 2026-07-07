@@ -11,6 +11,9 @@
   <Folder Name="/Solution Items/aspire config tutorial/">
     <File Path="SqlServerHosting.md" />
   </Folder>
+  <Folder Name="/Solution Items/microsft-entra-id/">
+    <File Path="entra_.md" />
+  </Folder>
   <Folder Name="/Solution Items/ServiceBus/">
     <File Path="AZSBS.md" />
   </Folder>
