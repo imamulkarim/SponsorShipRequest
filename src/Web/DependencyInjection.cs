@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using Azure.Identity;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using TechAssessment.Application.Common.Interfaces;
 using TechAssessment.Infrastructure.Data;
 using TechAssessment.Web.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +18,16 @@ public static class DependencyInjection
 
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddProblemDetails(o =>
+        {
+            o.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                context.ProblemDetails.Extensions.Add("requestId", context.HttpContext.TraceIdentifier);
+                Activity? activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+                //context.ProblemDetails.Extensions.Add("traceId", activity?.Id);
+            };
+        });
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 
         // Customise default API behaviour

@@ -68,44 +68,7 @@ var serviceBusConnection = builder.AddConnectionString(Services.ServiceBusConnec
 #endregion
 
 #region  example of using a SQL connection string from Aspire Host application configuration
-/*var sql = builder.AddConnectionString("TechAssessmentDb");
-
-var web = builder.AddProject<Projects.Web>(Services.WebApi)
-    .WithExternalHttpEndpoints()
-    .WithReference(sql)
-    .WithAspNetCoreEnvironment()
-    .WithUrlForEndpoint("http", url =>
-    {
-        url.DisplayText = "Scalar API Reference";
-        url.Url = "/scalar";
-    });
-
-if (builder.ExecutionContext.IsRunMode)
-{
-    builder.AddJavaScriptApp(Services.WebFrontend, "./../Web/ClientApp")
-        .WithRunScript("start")
-        .WithReference(web)
-        .WaitFor(web)
-        .WithHttpEndpoint(env: "PORT")
-        .WithExternalHttpEndpoints();
-}
-*/
-#endregion
-
-#region  example of using a Azure SQL connection  from Aspire Host application configuration
-
-//This provision or create new resources
-//var sql = builder.AddAzureSqlServer(builder.Configuration[Services.DatabaseServer]!);
-//var db = sql.AddDatabase(builder.Confiuration[Services.Database]!);
-
-//use existing
-var existingName = builder.AddParameter(Services.DatabaseServer);
-
-var existingResourceGroup = builder.AddParameter("resourceGroup");
-
-var sql = builder.AddAzureSqlServer("sql")
-    .AsExisting(existingName, existingResourceGroup)
-    .AddDatabase(Services.Database);
+var sql = builder.AddConnectionString("TechAssessmentDb");
 
 var web = builder.AddProject<Projects.Web>(Services.WebApi)
     .WithExternalHttpEndpoints()
@@ -127,6 +90,44 @@ if (builder.ExecutionContext.IsRunMode)
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints();
 }
+
+#endregion
+
+#region  example of using a Azure SQL connection  from Aspire Host application configuration
+
+//This provision or create new resources
+//var sql = builder.AddAzureSqlServer(builder.Configuration[Services.DatabaseServer]!);
+//var db = sql.AddDatabase(builder.Confiuration[Services.Database]!);
+
+//use existing
+//var existingName = builder.AddParameter(Services.DatabaseServer);
+
+//var existingResourceGroup = builder.AddParameter("resourceGroup");
+
+//var sql = builder.AddAzureSqlServer("sql")
+//    .AsExisting(existingName, existingResourceGroup)
+//    .AddDatabase(Services.Database);
+
+//var web = builder.AddProject<Projects.Web>(Services.WebApi)
+//    .WithExternalHttpEndpoints()
+//    .WithReference(sql)
+//    .WithReference(serviceBusConnection)
+//    .WithAspNetCoreEnvironment()
+//    .WithUrlForEndpoint("http", url =>
+//    {
+//        url.DisplayText = "Scalar API Reference";
+//        url.Url = "/scalar";
+//    });
+
+//if (builder.ExecutionContext.IsRunMode)
+//{
+//    builder.AddJavaScriptApp(Services.WebFrontend, "./../Web/ClientApp")
+//        .WithRunScript("start")
+//        .WithReference(web)
+//        .WaitFor(web)
+//        .WithHttpEndpoint(env: "PORT")
+//        .WithExternalHttpEndpoints();
+//}
 
 #endregion
 

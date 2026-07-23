@@ -19,15 +19,6 @@ public class AzureServiceBusPublisher : IServiceBusPublisher
     }
 
 
-    //public async ValueTask DisposeAsync()
-    //{
-    //    if (_sender != null)
-    //    {
-    //        await _sender.DisposeAsync();
-    //    }
-    //    await _serviceBusClient.DisposeAsync();
-    //}
-
     public async Task PublishAsync<T>(string messageId,T message, string topicQueue, CancellationToken cancellationToken = default)
     {
         try

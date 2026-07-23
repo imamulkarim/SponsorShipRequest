@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.RateLimiting;
 using TechAssessment.Application.SponsorshipRequests.Commands.CancelRequest;
 using TechAssessment.Application.SponsorshipRequests.Commands.CreateSponsorshipRequest;
 using TechAssessment.Application.SponsorshipRequests.Commands.SubmitSponsorshipRequest;
@@ -13,6 +14,7 @@ public class SponsorshipRequests : IEndpointGroup
     public static void Map(RouteGroupBuilder group)
     {
         group.RequireAuthorization();
+        group.RequireRateLimiting("fixed");
 
         group.MapPost(CreateRequest);
         group.MapGet(GetMyRequests);
@@ -30,6 +32,7 @@ public class SponsorshipRequests : IEndpointGroup
     }
 
     [EndpointSummary("Get My Sponsorship Requests")]
+    [EnableRateLimiting("per-user")]
     public static async Task<Ok<MyRequestsVm>> GetMyRequests(ICustomMediator sender)
     {
         var vm = await sender.Send(new GetMyRequestsQuery());

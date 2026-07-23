@@ -9,11 +9,13 @@ public class SponsorShipFinanceApprovalEventHandler : INotificationHandler<Spons
     private readonly ILogger _logger;
     private readonly IUser _user;
     private readonly IServiceBusPublisher _serviceBusPublisher;
-    public SponsorShipFinanceApprovalEventHandler(ILogger<SponsorShipApprovedEvent> logger, IUser user, IServiceBusPublisher serviceBusPublisher)
+    private readonly ISponsorshipFinanceApiClientService _sponsorshipFinanceApiClientService;
+    public SponsorShipFinanceApprovalEventHandler(ILogger<SponsorShipApprovedEvent> logger, IUser user, IServiceBusPublisher serviceBusPublisher, ISponsorshipFinanceApiClientService sponsorshipFinanceApiClientService)
     {
         _logger = logger;
         _user = user;
         _serviceBusPublisher = serviceBusPublisher;
+        _sponsorshipFinanceApiClientService = sponsorshipFinanceApiClientService;
     }
 
     public Task HandleAsync(SponsorShipApprovedEvent notification, CancellationToken cancellationToken = default)
@@ -43,6 +45,10 @@ public class SponsorShipFinanceApprovalEventHandler : INotificationHandler<Spons
         _serviceBusPublisher.PublishAsync(sponsorRequestDto.Id.ToString(), sponsorRequestDto, "sponsor-finance-approved-queue", cancellationToken);
         _logger.LogInformation("TechAssessment Request: Finance Approved Service is handled : {@Id}",
             notification.FinanceApprovedEvent.Id.ToString());
+
+        
+
+         _sponsorshipFinanceApiClientService.PostSponsorshipRequestAmount(notification, cancellationToken);
 
         return Task.CompletedTask;
     }

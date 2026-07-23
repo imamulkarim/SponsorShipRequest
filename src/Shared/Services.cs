@@ -24,7 +24,7 @@ public static class Services
     /// The name of the Database.
     /// This is the name of the database that will be created and used by the application.
     /// </summary>
-    public static string Database = "free-sql-db-TechAssessmentDb"; //"TechAssessmentDb";
+    public static string Database = "TechAssessmentDb";//"free-sql-db-TechAssessmentDb"; //"TechAssessmentDb";
 
     /// <summary>
     /// The name of the Database.
